@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up(): void /* se empieza a ejecutar una migración */
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('lastname')->after('name');
@@ -20,7 +20,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down(): void /* si arriba se crea una tabla, aquí se destruye */
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('lastname');
