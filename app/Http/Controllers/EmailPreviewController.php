@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 class EmailPreviewController extends Controller
 {
-    public function __invoke(){
+    public function __invoke()
+    {
         request()->validate([
             'customer'=>['required','string'],
             'email'=>['required','email'],
@@ -41,8 +42,8 @@ class EmailPreviewController extends Controller
             $subtotal = $product['price'] * $product['quantity'];
             $data['products'][] = [
                 'name'=> $product['name'],
-                'quantity' => $product['quantity'],
                 'price' => number_format($product['price'],2),
+                'quantity' => $product['quantity'],
                 'subtotal' => number_format($subtotal,2),
             ];
             $total += $subtotal;

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserController extends Controller
 {
@@ -16,7 +18,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        // Eloquent query sin ejecutar get() en los closures
+        $users = User::when(request()->has('username'), function (Builder $query) {
+                $query->where('username', 'like', '%' . request()->input('username') . '%');
+            })
+            ->when(request()->has('email'), function (Builder $query) {
+                $query->where('email', 'like', '%' . request()->input('email') . '%');
+            })
+            ->paginate(request()->per_page);  // Aquí se ejecuta la consulta y se obtienen los resultados
+
+        return UserResource::collection($users);
     }
 
     /**
@@ -29,7 +40,7 @@ class UserController extends Controller
 
         $user = User::create( $data);
 
-        return response() -> json(UserResource::make($user), 201);
+        return response() -> json(UserResource::make($user));
     }
 
     /**
@@ -46,7 +57,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $data = $request->validated();
-        $user->update(attributes: $data);
+        $user->update($data);
 
         return response() -> json(data: UserResource::make(parameters: $user));
     }
