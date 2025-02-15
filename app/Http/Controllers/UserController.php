@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PartialUpdateRequest;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -65,8 +66,17 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user): void
+    public function patch(PartialUpdateRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $user->update($data);
+
+        return response() -> json(data: UserResource::make($user));
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return response()->json(null, 204);
     }
 }
